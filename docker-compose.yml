@@ -51,6 +51,29 @@ services:
       - my-app-network
     restart: on-failure
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./.docker/dev/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - "./frontend:/app"
+      - "/app/node_modules"
+    ports:
+      - 3000:3000
+    command: ["npm", "start"]
+    networks:
+        - my-app-network
+
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: ./.docker/dev/Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: ["npm", "test"]
+
 networks:
   my-app-network:
     driver: bridge
